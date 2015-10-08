@@ -1,7 +1,9 @@
 using System;
+using System.Data;
+using System.Collections.Generic;
 using Gtk;
 using MySql.Data.MySqlClient;
-
+using PArticulo;
 public partial class MainWindow: Gtk.Window
 {	
 	public MainWindow (): base (Gtk.WindowType.Toplevel)
@@ -9,49 +11,60 @@ public partial class MainWindow: Gtk.Window
 		Build ();
 
 		Console.WriteLine ("MainWindow ctor.");
+		IDbConnection dbConnection = App.Instance.DbConnection;
 		MySqlConnection mySqlConnection = new MySqlConnection (
 			"Database=dbprueba;Data Source=localhost;User Id=root;Password=sistemas"
-		);
+			);
 		mySqlConnection.Open ();
 
 		MySqlCommand mySqlCommand = mySqlConnection.CreateCommand ();
 		mySqlCommand.CommandText = "select * from articulo";
 
 		MySqlDataReader mySqlDataReader = mySqlCommand.ExecuteReader ();
+		//		treeView.AppendColumn ("id", new CellRendererText (), "text", 0);
+		//		treeView.AppendColumn ("nombre", new CellRendererText (), "text", 1);
+		string[] columnNames = getColumnNames (mySqlDataReader);
+		for (int index = 0; index < columnNames.Length; index++)
+			treeView.AppendColumn (columnNames [index], new CellRendererText (), "text", index);
 
-		ListStore listStore = new ListStore (typeof(String), typeof(String), typeof(String), typeof(String));
+		//ListStore listStore = new ListStore (typeof(String), typeof(String));
+		Type[] types = getTypes (mySqlDataReader.FieldCount);
+		ListStore listStore = new ListStore (types);
 
 		while (mySqlDataReader.Read()) {
-			Console.WriteLine ("id={0} nombre={1}", mySqlDataReader [0], mySqlDataReader [1]);
-			listStore.AppendValues (mySqlDataReader [0].ToString(), mySqlDataReader [1], mySqlDataReader [2].ToString(), mySqlDataReader[3].ToString());
+			//listStore.AppendValues (mySqlDataReader [0].ToString(), mySqlDataReader [1].ToString());
+			string[] values = getValues (mySqlDataReader);
+			listStore.AppendValues (values);
 		}
 
-
 		mySqlDataReader.Close ();
-		mySqlConnection.Close ();
-
-		//añado columnas
-		treeView.AppendColumn ("id", new CellRendererText (), "text", 0);
-		treeView.AppendColumn ("nombre", new CellRendererText (), "text", 1);
-		treeView.AppendColumn ("categoria", new CellRendererText (), "text", 2);
-		treeView.AppendColumn ("precio", new CellRendererText (), "text", 3);
-
-		//establezco el modelo
-		ListStore listStore1 = new ListStore (typeof(String), typeof(String));
-		//TODO rellenar listStore
-
-
-		listStore.AppendValues ("1", "Nombre del primero");
 
 		treeView.Model = listStore;
 
-		string[] values = new string[2];
-		values [0] = "2";
-		values [1] = "Nombre del segundo";
-		listStore.AppendValues (values);
+		mySqlConnection.Close ();
+	}
 
+	private string[] getColumnNames(MySqlDataReader mySqlDataReader) {
+		List<string> columnNames = new List<string> ();
+		int count = mySqlDataReader.FieldCount;
+		for (int index = 0; index < count; index++)
+			columnNames.Add (mySqlDataReader.GetName (index));
+		return columnNames.ToArray ();
+	}
 
+	private Type[] getTypes(int count) {
+		List<Type> types = new List<Type> ();
+		for (int index = 0; index < count; index++)
+			types.Add (typeof(string));
+		return types.ToArray ();
+	}
 
+	private string[] getValues(MySqlDataReader mySqlDataReader) {
+		List<string> values = new List<string> ();
+		int count = mySqlDataReader.FieldCount;
+		for (int index = 0; index < count; index++)
+			values.Add (mySqlDataReader [index].ToString ());
+		return values.ToArray ();
 	}
 
 	protected void OnDeleteEvent (object sender, DeleteEventArgs a)
