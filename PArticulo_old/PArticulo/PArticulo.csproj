@@ -61,9 +61,6 @@
       <HintPath>..\..\..\..\..\usr\lib\cli\MySql.Data-6.4\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="System.Data" />
-    <Reference Include="PSerpisAd">
-      <HintPath>..\..\PSerpisAd\PSerpisAd\bin\Debug\PSerpisAd.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
@@ -76,6 +73,9 @@
     <Compile Include="gtk-gui\MainWindow.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="App.cs" />
+    <Compile Include="PersisrerHelper.cs" />
+    <Compile Include="QueryResult.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
