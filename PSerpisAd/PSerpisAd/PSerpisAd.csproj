@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{1296C0FE-5214-454C-8836-61F21A86AA56}</ProjectGuid>
+    <ProjectGuid>{E436B7C9-E3B4-452F-8D5A-E9FBE448A2B2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>PSerpisAd</RootNamespace>
     <AssemblyName>PSerpisAd</AssemblyName>
@@ -34,9 +34,6 @@
       <Private>False</Private>
       <Package>gtk-sharp-2.0</Package>
     </Reference>
-    <Reference Include="MySql.Data">
-      <HintPath>..\..\..\..\..\usr\lib\cli\MySql.Data-6.4\MySql.Data.dll</HintPath>
-    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
       <Private>False</Private>
@@ -46,13 +43,11 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="App.cs" />
-    <Compile Include="MyClass.cs" />
     <Compile Include="PersisterHelper.cs" />
     <Compile Include="QueryResult.cs" />
     <Compile Include="TreeViewHelper.cs" />
+    <Compile Include="ComboBoxHelper.cs" />
+    <Compile Include="DbCommandHelper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <None Include="PSerpisAd.csproj" />
-  </ItemGroup>
 </Project>

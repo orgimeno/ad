@@ -1,8 +1,7 @@
 using System;
 using System.Data;
-using MySql.Data.MySqlClient;
 
-namespace PSerpisAd
+namespace SerpisAd
 {
 	public class App
 	{
@@ -16,8 +15,8 @@ namespace PSerpisAd
 
 		private IDbConnection dbConnection;
 		public IDbConnection DbConnection {
-			get { return dbConnection;}
-			set{ dbConnection = value;}
+			get { return dbConnection; }
+			set { dbConnection = value;	}
 		}
 
 	}

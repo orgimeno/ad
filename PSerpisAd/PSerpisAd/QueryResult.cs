@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace PSerpisAd
+namespace SerpisAd
 {
 	public class QueryResult
 	{

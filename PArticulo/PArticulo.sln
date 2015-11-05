@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PArticulo", "PArticulo\PArticulo.csproj", "{DD669849-D711-49A3-8432-C02195BCCAD8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PArticulo", "PArticulo\PArticulo.csproj", "{93E213CB-CB16-4453-B61B-863BDC8334DD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,10 +9,10 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{DD669849-D711-49A3-8432-C02195BCCAD8}.Debug|x86.ActiveCfg = Debug|x86
-		{DD669849-D711-49A3-8432-C02195BCCAD8}.Debug|x86.Build.0 = Debug|x86
-		{DD669849-D711-49A3-8432-C02195BCCAD8}.Release|x86.ActiveCfg = Release|x86
-		{DD669849-D711-49A3-8432-C02195BCCAD8}.Release|x86.Build.0 = Release|x86
+		{93E213CB-CB16-4453-B61B-863BDC8334DD}.Debug|x86.ActiveCfg = Debug|x86
+		{93E213CB-CB16-4453-B61B-863BDC8334DD}.Debug|x86.Build.0 = Debug|x86
+		{93E213CB-CB16-4453-B61B-863BDC8334DD}.Release|x86.ActiveCfg = Release|x86
+		{93E213CB-CB16-4453-B61B-863BDC8334DD}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = PArticulo\PArticulo.csproj
