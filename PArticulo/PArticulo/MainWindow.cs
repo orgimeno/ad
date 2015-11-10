@@ -3,6 +3,7 @@ using Gtk;
 
 using SerpisAd;
 using PArticulo;
+using System.Collections;
 
 public partial class MainWindow: Gtk.Window
 {	
@@ -19,6 +20,13 @@ public partial class MainWindow: Gtk.Window
 			fill();
 		};
 
+		removeAction.Activated += delegate {
+			TreeIter treeIter;
+			treeView.Selection.GetSelected(out treeIter);
+			IList row= (IList)treeView.Model.GetValue(treeIter, 0);
+			Console.Write("{0}", row[0]);
+
+		};
 
 		//newAction.Activated += newActionActivated;
 	}
