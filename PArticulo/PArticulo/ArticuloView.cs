@@ -9,7 +9,7 @@ namespace PArticulo
 	public partial class ArticuloView : Gtk.Window
 	{
 		public ArticuloView () : 
-				base(Gtk.WindowType.Toplevel)
+			base(Gtk.WindowType.Toplevel)
 		{
 			this.Build ();
 			//entryNombre.Text = "nuevo";
@@ -21,6 +21,7 @@ namespace PArticulo
 		}
 
 		private void save() {
+
 			IDbCommand dbCommand = App.Instance.DbConnection.CreateCommand ();
 			dbCommand.CommandText = "insert into articulo (nombre, categoria, precio) " +
 				"values (@nombre, @categoria, @precio)";
@@ -34,6 +35,7 @@ namespace PArticulo
 			DbCommandHelper.AddParameter (dbCommand, "precio", precio);
 			dbCommand.ExecuteNonQuery ();
 		}
+
 	}
 }
 
