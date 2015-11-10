@@ -23,7 +23,7 @@ namespace PArticulo
 		private void save() {
 			IDbCommand dbCommand = App.Instance.DbConnection.CreateCommand ();
 			dbCommand.CommandText = "insert into articulo (nombre, categoria, precio) " +
-				"values (@nombre, @categoria, @precio);";
+				"values (@nombre, @categoria, @precio)";
 
 			string nombre = entryNombre.Text;
 			object categoria = ComboBoxHelper.GetId (comboBoxCategoria);
