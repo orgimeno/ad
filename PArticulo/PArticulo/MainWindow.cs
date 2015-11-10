@@ -4,6 +4,7 @@ using Gtk;
 using SerpisAd;
 using PArticulo;
 using System.Collections;
+using System.Data;
 
 public partial class MainWindow: Gtk.Window
 {	
@@ -25,7 +26,15 @@ public partial class MainWindow: Gtk.Window
 			treeView.Selection.GetSelected(out treeIter);
 			IList row= (IList)treeView.Model.GetValue(treeIter, 0);
 			Console.Write("{0}", row[0]);
+			eraseArticulo(row[0]);
 
+		};
+
+		editAction.Activated += delegate{
+			TreeIter treeIter;
+			treeView.Selection.GetSelected(out treeIter);
+			IList row= (IList)treeView.Model.GetValue(treeIter, 0);
+			Console.Write("{0}", row[0]);
 		};
 
 		//newAction.Activated += newActionActivated;
@@ -39,7 +48,17 @@ public partial class MainWindow: Gtk.Window
 //	{
 //		new ArticuloView ();
 //	}
-	
+
+	protected void eraseArticulo(object id){
+		IDbCommand dbCommand = App.Instance.DbConnection.CreateCommand ();
+		dbCommand.CommandText = "delete from articulo " +
+				"where id=@id";
+
+		DbCommandHelper.AddParameter (dbCommand, "id", id);
+		Console.Write (id+" id");
+		dbCommand.ExecuteNonQuery ();
+		fill ();
+	}
 
 	protected void OnDeleteEvent (object sender, DeleteEventArgs a)
 	{
