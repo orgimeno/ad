@@ -8,16 +8,24 @@ namespace PArticulo
 {
 	public partial class ArticuloView : Gtk.Window
 	{
-		public ArticuloView () : 
+		public ArticuloView (object id) : 
 			base(Gtk.WindowType.Toplevel)
 		{
 			this.Build ();
-			//entryNombre.Text = "nuevo";
-			QueryResult queryResult = PersisterHelper.Get ("select * from categoria");
-			ComboBoxHelper.Fill (comboBoxCategoria, queryResult);
-			//spinButtonPrecio.Value = 1.5;
+			if (id==null) {
+				//entryNombre.Text = "nuevo";
+				QueryResult queryResult = PersisterHelper.Get ("select * from categoria");
+				ComboBoxHelper.Fill (comboBoxCategoria, queryResult);
+				//spinButtonPrecio.Value = 1.5;
 
-			saveAction.Activated += delegate {	save();	};
+				saveAction.Activated += delegate {
+					save ();
+				};
+			} else {
+				QueryResult queryResult = PersisterHelper.Get ("select * from articulo where id="+id);
+				entryNombre.Text=queryResult.Rows[1];
+			}
+
 		}
 
 		private void save() {
@@ -35,6 +43,10 @@ namespace PArticulo
 			DbCommandHelper.AddParameter (dbCommand, "precio", precio);
 			dbCommand.ExecuteNonQuery ();
 			Destroy ();
+		}
+
+		private void updateArt(object id){
+
 		}
 
 	}

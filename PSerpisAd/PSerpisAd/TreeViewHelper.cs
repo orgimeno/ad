@@ -30,6 +30,35 @@ namespace SerpisAd
 			} 
 		
 		}
+
+		public static object GetId(TreeView treeView){
+			TreeIter treeIter;
+			if (!treeView.Selection.GetSelected (out treeIter))
+				return null;
+			IList row= (IList)treeView.Model.GetValue(treeIter, 0);
+			return row[0];
+		}
+
+		public static bool IsSelected(TreeView treeView){
+			TreeIter treeIter;
+			return treeView.Selection.GetSelected (out treeIter);
+		}
+
+		public static bool ConfirmDelete(Window window){
+			MessageDialog messageDialog = new MessageDialog (
+				window,
+				DialogFlags.DestroyWithParent,
+				MessageType.Question,
+				ButtonsType.YesNo,
+				"Quieres borrar el elemento?"
+				);
+			messageDialog.Title = window.Title;
+			ResponseType response = (ResponseType)messageDialog.Run();
+			messageDialog.Destroy ();
+			return response == ResponseType.Yes;
+
+		}
+
 	}
 }
 

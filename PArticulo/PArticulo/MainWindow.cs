@@ -14,7 +14,7 @@ public partial class MainWindow: Gtk.Window
 		Console.WriteLine ("MainWindow ctor.");
 		fill ();
 		newAction.Activated += delegate {
-			new ArticuloView();
+			new ArticuloView(null);
 		};
 
 		refreshAction.Activated += delegate {
@@ -22,20 +22,21 @@ public partial class MainWindow: Gtk.Window
 		};
 
 		removeAction.Activated += delegate {
-			TreeIter treeIter;
-			treeView.Selection.GetSelected(out treeIter);
-			IList row= (IList)treeView.Model.GetValue(treeIter, 0);
-			Console.Write("{0}", row[0]);
-			eraseArticulo(row[0]);
-
+			object id=TreeViewHelper.GetId(treeView);
+			//Console.Write("{0}", row[0]);
+			if(TreeViewHelper.ConfirmDelete(this))
+				eraseArticulo(id);
 		};
 
 		editAction.Activated += delegate{
-			TreeIter treeIter;
-			treeView.Selection.GetSelected(out treeIter);
-			IList row= (IList)treeView.Model.GetValue(treeIter, 0);
-			Console.Write("{0}", row[0]);
+			new ArticuloView(TreeViewHelper.GetId(treeView));
 		};
+
+		treeView.Selection.Changed += delegate {
+			removeAction.Sensitive= TreeViewHelper.GetId(treeView) != null;
+		};
+
+		removeAction.Sensitive = false;
 
 		//newAction.Activated += newActionActivated;
 	}
@@ -44,15 +45,16 @@ public partial class MainWindow: Gtk.Window
 		QueryResult queryResult1 = PersisterHelper.Get ("select * from articulo");
 		TreeViewHelper.Fill (treeView, queryResult1);
 	}
-//	void newActionActivated (object sender, EventArgs e)
-//	{
-//		new ArticuloView ();
-//	}
+	//	void newActionActivated (object sender, EventArgs e)
+	//	{
+	//		new ArticuloView ();
+	//	}
+
 
 	protected void eraseArticulo(object id){
 		IDbCommand dbCommand = App.Instance.DbConnection.CreateCommand ();
 		dbCommand.CommandText = "delete from articulo " +
-				"where id=@id";
+			"where id=@id";
 
 		DbCommandHelper.AddParameter (dbCommand, "id", id);
 		Console.Write (id+" id");

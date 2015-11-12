@@ -62,7 +62,7 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="PSerpisAd">
-      <HintPath>bin\Debug\PSerpisAd.dll</HintPath>
+      <HintPath>..\..\PSerpisAd\PSerpisAd\bin\Debug\PSerpisAd.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
