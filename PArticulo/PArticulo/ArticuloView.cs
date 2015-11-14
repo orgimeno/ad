@@ -23,7 +23,15 @@ namespace PArticulo
 				};
 			} else {
 				QueryResult queryResult = PersisterHelper.Get ("select * from articulo where id="+id);
-				entryNombre.Text=queryResult.Rows[1];
+				foreach (var p in queryResult.Rows) {
+					entryNombre.Text = p [1].ToString ();
+					QueryResult queryResultCat = PersisterHelper.Get ("select * from categoria");
+					ComboBoxHelper.Fill (comboBoxCategoria, queryResultCat);
+					spinButtonPrecio.Text = p [3].ToString ();
+				}
+				saveAction.Activated += delegate {
+					updateArt (id);
+				};
 			}
 
 		}
@@ -46,6 +54,21 @@ namespace PArticulo
 		}
 
 		private void updateArt(object id){
+
+			IDbCommand dbCommand = App.Instance.DbConnection.CreateCommand ();
+			dbCommand.CommandText = "update articulo set nombre=@nombre, categoria=@categoria, precio=@precio"+
+				" where id=@id"; 
+
+			string nombre = entryNombre.Text;
+			object categoria = ComboBoxHelper.GetId (comboBoxCategoria);
+			decimal precio = Convert.ToDecimal(spinButtonPrecio.Value);
+
+			DbCommandHelper.AddParameter (dbCommand, "id", id);
+			DbCommandHelper.AddParameter (dbCommand, "nombre", nombre);
+			DbCommandHelper.AddParameter (dbCommand, "categoria", categoria);
+			DbCommandHelper.AddParameter (dbCommand, "precio", precio);
+			dbCommand.ExecuteNonQuery ();
+			Destroy ();
 
 		}
 
