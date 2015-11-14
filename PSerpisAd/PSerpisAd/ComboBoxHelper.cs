@@ -17,6 +17,7 @@ namespace SerpisAd
 			});
 			ListStore listStore = new ListStore (typeof(IList));
 			//TODO localización de "sin asignar"
+
 			IList first = new object[]{null, "<sin asignar>"};
 			TreeIter treeIterFirst = listStore.AppendValues (first);
 			foreach (IList row in queryResult.Rows)

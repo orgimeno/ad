@@ -12,22 +12,23 @@ namespace PArticulo
 			base(Gtk.WindowType.Toplevel)
 		{
 			this.Build ();
+			//Si es un articulo nuevo
 			if (id==null) {
-				//entryNombre.Text = "nuevo";
 				QueryResult queryResult = PersisterHelper.Get ("select * from categoria");
 				ComboBoxHelper.Fill (comboBoxCategoria, queryResult);
-				//spinButtonPrecio.Value = 1.5;
-
+			
 				saveAction.Activated += delegate {
 					save ();
 				};
+			//Si hay que actualizar el articulo
 			} else {
 				QueryResult queryResult = PersisterHelper.Get ("select * from articulo where id="+id);
-				foreach (var p in queryResult.Rows) {
-					entryNombre.Text = p [1].ToString ();
+				foreach (var row in queryResult.Rows) {
+					entryNombre.Text = row [1].ToString ();
 					QueryResult queryResultCat = PersisterHelper.Get ("select * from categoria");
 					ComboBoxHelper.Fill (comboBoxCategoria, queryResultCat);
-					spinButtonPrecio.Text = p [3].ToString ();
+					comboBoxCategoria.Active = Int32.Parse(row [2].ToString());
+					spinButtonPrecio.Text = row [3].ToString ();
 				}
 				saveAction.Activated += delegate {
 					updateArt (id);
