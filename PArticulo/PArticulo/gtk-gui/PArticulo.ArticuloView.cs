@@ -107,7 +107,7 @@ namespace PArticulo
 			this.spinButtonPrecio.Name = "spinButtonPrecio";
 			this.spinButtonPrecio.Adjustment.PageIncrement = 10;
 			this.spinButtonPrecio.ClimbRate = 1;
-			this.spinButtonPrecio.Digits = ((uint)(2));
+			this.spinButtonPrecio.Digits = ((uint)(6));
 			this.spinButtonPrecio.Numeric = true;
 			this.table1.Add (this.spinButtonPrecio);
 			global::Gtk.Table.TableChild w8 = ((global::Gtk.Table.TableChild)(this.table1 [this.spinButtonPrecio]));

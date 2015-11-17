@@ -34,9 +34,11 @@ public partial class MainWindow: Gtk.Window
 
 		treeView.Selection.Changed += delegate {
 			removeAction.Sensitive= TreeViewHelper.GetId(treeView) != null;
+			editAction.Sensitive= TreeViewHelper.GetId(treeView) != null;
 		};
 
 		removeAction.Sensitive = false;
+		editAction.Sensitive = false;
 
 		//newAction.Activated += newActionActivated;
 	}

@@ -14,7 +14,7 @@ public partial class MainWindow: Gtk.Window
 		Console.WriteLine ("MainWindow ctor.");
 		fill ();
 		newAction.Activated += delegate {
-			new ArticuloView(null);
+			new ArticuloView();
 		};
 
 		refreshAction.Activated += delegate {
@@ -31,12 +31,14 @@ public partial class MainWindow: Gtk.Window
 		editAction.Activated += delegate{
 			new ArticuloView(TreeViewHelper.GetId(treeView));
 		};
-
+		
 		treeView.Selection.Changed += delegate {
 			removeAction.Sensitive= TreeViewHelper.GetId(treeView) != null;
+			editAction.Sensitive = TreeViewHelper.GetId(treeView) != null;
 		};
 
 		removeAction.Sensitive = false;
+		editAction.Sensitive = false;
 
 		//newAction.Activated += newActionActivated;
 	}
