@@ -1,74 +1,78 @@
 using System;
 using System.Reflection;
 
-namespace PReflection
+namespace SerpisAd
 {
 	class MainClass
 	{
 		public static void Main (string[] args)
 		{
-			/*object i=0;
-			Type typeInt = i.GetType ();
-			Console.WriteLine ("typeInt.Name={0}", typeInt.Name);
+			//			object i=33;
+			//			Type typeI = i.GetType ();
+			//			showType (typeI);
+			//
+			//			object s="Hola";
+			//			Type typeS = s.GetType (); 
+			//			showType (typeS);
+			//
+			//			Type typeX = typeof(string);
+			//			showType (typeX);
+			//
+			//
+			//			Type typeO = typeof(object);
+			//			showType (typeO);
 
-			object s="";
-			Type typeS = s.GetType ();
-			Console.WriteLine ("typeS.Name={0}",typeS.Name);
-
-			Type typeX = typeof(String);
-			showType (typeX);
-			
-			Type typeFoo = typeof(Foo);
-			showType (typeFoo);
-			
-			Type typeArt = typeof(Articulo);
-			showType (typeArt);
-
-			Type typeO = typeof(object);
-			showType (typeO);*/
-
+			//			Type typeFoo = typeof(Foo);
+			//			showType (typeFoo);
 			Articulo articulo = new Articulo ();
-
-			articulo.Nombre="articulo1";
-			articulo.Precio = decimal.Parse("2.6");
-			articulo.Categoria = 2;
-
-			setValues (articulo, new object[] { 33L, "nuevo 33 modificado", 3L, decimal.Parse("33.33") });
+			//showType (articulo.GetType());
+			//			articulo.Nombre = "nuevo 33";
+			//			articulo.Categoria = 2;
+			//			articulo.Precio = decimal.Parse ("3,5");;
+			setValues (articulo, 
+			           new object[] { 33L, "nuevo 33 modificado", 3L, decimal.Parse("33,33") });
 			showObject (articulo);
-
 		}
 
-		private static void showType(Type type){
-			Console.WriteLine ("type.Name={0} type.FullName={1} type.BaseType={2}",
-			                   type.Name, type.FullName, type.BaseType);	
+		private static void showType(Type type) {
+			Console.WriteLine ("type.Name={0} type.FullName={1} type.BaseType.Name={2}", 
+			                   type.Name, type.FullName, type.BaseType.Name);
 			PropertyInfo[] propertyInfos = type.GetProperties ();
-			foreach (PropertyInfo propertyInfo in propertyInfos){
-				Console.WriteLine ("property.Name={0} property.PropertyInfo={1}",
-				                   propertyInfo.Name, propertyInfo.PropertyType);	
-			}
+			foreach (PropertyInfo propertyInfo in propertyInfos)
+				Console.WriteLine ("propertyInfo.Name={0} propertyInfo.PropertyType={1}", 
+				                   propertyInfo.Name, propertyInfo.PropertyType);
 		}
 
-		private static void showObject(object obj){
+		private static void showObject(object obj) {
 			Type type = obj.GetType ();
+			if (!(obj is Attribute)) {
+				object[] attributes = type.GetCustomAttributes (true);
+				foreach (Attribute attribute in attributes)
+					showObject (attribute);
+			}
 			PropertyInfo[] propertyInfos = type.GetProperties ();
 			foreach (PropertyInfo propertyInfo in propertyInfos) {
-				Console.WriteLine("{0}={1}",propertyInfo.Name, propertyInfo.GetValue (obj,null));
-
+				if (propertyInfo.IsDefined (typeof(IdAttribute), true)) 
+					Console.WriteLine ("{0} decorado con IdAttribute", propertyInfo.Name);
+				Console.WriteLine ("{0}={1}", 
+				                   propertyInfo.Name, propertyInfo.GetValue (obj, null));
 			}
 		}
 
-		private static void setValues(object obj, object[] values){
+		private static void setValues(object obj, object[] values) {
 			Type type = obj.GetType ();
 			PropertyInfo[] propertyInfos = type.GetProperties ();
 			int index = 0;
-			foreach (PropertyInfo propertyInfo in propertyInfos) {
+			foreach (PropertyInfo propertyInfo in propertyInfos) 
 				propertyInfo.SetValue (obj, values [index++], null);
-			}
 
 		}
 	}
 
-	public class Foo{
+	public class IdAttribute : Attribute {
+	}
+
+	public class TableAttribute : Attribute {
 		private string name;
 
 		public string Name {
@@ -81,6 +85,33 @@ namespace PReflection
 		}
 	}
 
+	public class Foo {
+		private object id;
+
+		public object Id {
+			get {
+				return id;
+			}
+			set {
+				id = value;
+			}
+		}
+
+		private string name;
+
+		public string Name {
+			get {
+				return name;
+			}
+			set {
+				name = value;
+			}
+		}
+
+
+	}
+
+	[Table(Name = "article")]
 	public class Articulo
 	{
 		public Articulo ()
@@ -92,6 +123,7 @@ namespace PReflection
 		private object categoria;
 		private decimal precio;
 
+		[Id]
 		public object Id {
 			get { 
 				return id;
@@ -130,4 +162,6 @@ namespace PReflection
 			}
 		}
 	}
+
+
 }

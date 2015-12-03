@@ -6,58 +6,52 @@ namespace PArticulo
 {
 	public class ArticuloPersister
 	{
-		public static Articulo Load(object id){
-
-			Articulo articulo = new Articulo ();
+		public static Articulo Load(object id) {
+			Articulo articulo = new Articulo();
+			articulo.Id = id;
 			IDbCommand dbCommand = App.Instance.DbConnection.CreateCommand ();
 			dbCommand.CommandText = "select * from articulo where id = @id";
 			DbCommandHelper.AddParameter (dbCommand, "id", id);
 			IDataReader dataReader = dbCommand.ExecuteReader ();
-			if (!dataReader.Read ()) {
+			if (!dataReader.Read ())
 				//TODO throw exception
-				throw new NotImplementedException();
-				return articulo;
-			}
+				return null;
 			articulo.Nombre = (string)dataReader ["nombre"];
-			articulo.Categoria = dataReader ["categoria"];
-			if (articulo.Categoria is DBNull)
-				articulo.Categoria = null;
-			articulo.Precio = (decimal)dataReader ["precio"];
+			articulo.Categoria = get (dataReader ["categoria"], null);
+			articulo.Precio = (decimal)get(dataReader ["precio"], decimal.Zero);
 			dataReader.Close ();
 			return articulo;
-
 		}
 
-		public static void Insert(Articulo articulo){
+		private static object get(object value, object defaultValue) {
+			return value is DBNull ? defaultValue : value;  
+		}
+
+		public static int Insert(Articulo articulo) {
 			IDbCommand dbCommand = App.Instance.DbConnection.CreateCommand ();
 			dbCommand.CommandText = "insert into articulo (nombre, categoria, precio) " +
 				"values (@nombre, @categoria, @precio)";
-			string nombre = articulo.Nombre;
-			object categoria = articulo.Categoria;
-			decimal precio = articulo.Precio;
-
-			DbCommandHelper.AddParameter (dbCommand, "nombre", nombre);
-			DbCommandHelper.AddParameter (dbCommand, "categoria", categoria);
-			DbCommandHelper.AddParameter (dbCommand, "precio", precio);
-			dbCommand.ExecuteNonQuery ();
+			DbCommandHelper.AddParameter (dbCommand, "nombre", articulo.Nombre);
+			DbCommandHelper.AddParameter (dbCommand, "categoria", articulo.Categoria);
+			DbCommandHelper.AddParameter (dbCommand, "precio", articulo.Precio);
+			return dbCommand.ExecuteNonQuery ();
 		}
 
-		public static void Update(Articulo articulo){
+		public static int Update(Articulo articulo) {
 			IDbCommand dbCommand = App.Instance.DbConnection.CreateCommand ();
-			dbCommand.CommandText = "update articulo set nombre=@nombre, categoria=@categoria, precio=@precio"+
-				" where id=@id"; 
-
-			object id = articulo.Id;
-			string nombre = articulo.Nombre;
-			object categoria = articulo.Categoria;
-			decimal precio = articulo.Precio;
-
-			DbCommandHelper.AddParameter (dbCommand, "id", id);
-			DbCommandHelper.AddParameter (dbCommand, "nombre", nombre);
-			DbCommandHelper.AddParameter (dbCommand, "categoria", categoria);
-			DbCommandHelper.AddParameter (dbCommand, "precio", precio);
-			dbCommand.ExecuteNonQuery ();
+			dbCommand.CommandText = "update articulo set nombre = @nombre, " +
+				"categoria = @categoria, precio = @precio where id = @id"; 
+			DbCommandHelper.AddParameter (dbCommand, "nombre", articulo.Nombre);
+			DbCommandHelper.AddParameter (dbCommand, "categoria", articulo.Categoria);
+			DbCommandHelper.AddParameter (dbCommand, "precio", articulo.Precio);
+			DbCommandHelper.AddParameter (dbCommand, "id", articulo.Id);
+			return dbCommand.ExecuteNonQuery ();
 		}
+
+		public static int Save(Articulo articulo) {
+			return articulo.Id == null ? Insert (articulo) : Update (articulo);
+		}
+
 	}
 }
 

@@ -14,13 +14,14 @@ namespace PArticulo
 		public ArticuloView () : 
 			base(Gtk.WindowType.Toplevel)
 		{
+			articulo = new Articulo ();
+			articulo.Nombre = "";
 			init ();
 			saveAction.Activated += delegate {	save();	};
 		}
 		//Si hay que actualizar el articulo
 		public ArticuloView (object id) : base(WindowType.Toplevel) {
-			articulo.Id = id;
-			load ();
+			articulo = ArticuloPersister.Load(id);
 			init ();
 			//Versión anterior de update
 			/*
@@ -45,25 +46,22 @@ namespace PArticulo
 
 		}
 
-		private void load() {
-			ArticuloPersister.Load (articulo.Id);
-		}
-
-		private void save() {
-			Articulo articulo = new Articulo ();
+		private void updateModel(){
 			articulo.Nombre = entryNombre.Text;
 			articulo.Categoria = ComboBoxHelper.GetId (comboBoxCategoria);
 			articulo.Precio = Convert.ToDecimal(spinButtonPrecio.Value);
-			ArticuloPersister.Insert (articulo);
+		}
+
+		private void save() {
+			updateModel ();
+			//ArticuloPersister.Insert (articulo);
+			Persister.Insert (articulo);
 			Destroy ();
 		}
 
 		private void updateArt(object id){
-			Articulo articulo = new Articulo ();
 			articulo.Id = id;
-			articulo.Nombre = entryNombre.Text;
-			articulo.Categoria = ComboBoxHelper.GetId (comboBoxCategoria);
-			articulo.Precio = Convert.ToDecimal(spinButtonPrecio.Value);
+			updateModel ();
 			ArticuloPersister.Update (articulo);
 			Destroy ();
 

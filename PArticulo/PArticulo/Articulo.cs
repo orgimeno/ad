@@ -8,6 +8,7 @@ namespace PArticulo
 		{
 		}
 
+		private string table = "articulo";
 		private object id;
 		private string nombre;
 		private object categoria;
