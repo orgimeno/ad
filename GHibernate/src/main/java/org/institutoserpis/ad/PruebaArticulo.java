@@ -1,11 +1,15 @@
 package org.institutoserpis.ad;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Scanner;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+
+import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
 
 public class PruebaArticulo {
 	private static Scanner scanner = new Scanner(System.in);
@@ -25,6 +29,28 @@ public class PruebaArticulo {
 		entityManager.close();
 		
 		entityManagerFactory.close();
+	}	
+	
+	private static BigDecimal scanBigDecimal(String label) throws java.text.ParseException {
+		while (true) {
+			System.out.print(label);
+			String data = scanner.nextLine().trim();
+			DecimalFormat decimalFormat = (DecimalFormat)DecimalFormat.getInstance();
+			decimalFormat.setParseBigDecimal(true);
+			try {
+				return (BigDecimal)decimalFormat.parse(data);
+			} catch (ParseException e) {
+				System.out.println("Debe ser un número decimal");
+			}
+		}
+	}
+	
+	private static Articulo scanArticulo() throws java.text.ParseException {
+		Articulo articulo = new Articulo();
+		articulo.setNombre(scanString(    "   Nombre: "));
+		articulo.setCategoria(scanLong(      "Categoria: "));
+		articulo.setPrecio(scanBigDecimal("   Precio: "));
+		return articulo;
 	}
 	
 	private static long scanLong(String label) {
@@ -69,6 +95,10 @@ public class PruebaArticulo {
 		long id = scanLong("Introduzca una id para eliminar");
 		Articulo articulo = entityManager.find(Articulo.class, id);
 		entityManager.remove(articulo);
+	}
+	
+	public static void nuevoArticulo(EntityManager entityManager){
+		
 	}
 
 }
