@@ -1,104 +1,112 @@
 package org.institutoserpis.ad;
 
+
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
+import java.util.Date;
 import java.util.List;
-import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
-
 public class PruebaArticulo {
-	private static Scanner scanner = new Scanner(System.in);
-	
+	private static EntityManagerFactory entityManagerFactory;
+
 	public static void main(String[] args) {
+		Logger.getLogger("org.hibernate").setLevel(Level.SEVERE);
 		System.out.println("inicio");
-		EntityManagerFactory entityManagerFactory = 
+		entityManagerFactory = 
 				Persistence.createEntityManagerFactory("org.institutoserpis.ad");
 		
-		EntityManager entityManager = entityManagerFactory.createEntityManager();
-		entityManager.getTransaction().begin();
-
-		listarArticulos(entityManager);
-		buscarArticulo(entityManager);
-		eliminarArticulo(entityManager);
-		entityManager.getTransaction().commit();
-		entityManager.close();
+//		Long articuloId = persist();
+//		update(articuloId);
+//		find(articuloId);
+//		remove(articuloId);
+		query();
 		
 		entityManagerFactory.close();
-	}	
-	
-	private static BigDecimal scanBigDecimal(String label) throws java.text.ParseException {
-		while (true) {
-			System.out.print(label);
-			String data = scanner.nextLine().trim();
-			DecimalFormat decimalFormat = (DecimalFormat)DecimalFormat.getInstance();
-			decimalFormat.setParseBigDecimal(true);
-			try {
-				return (BigDecimal)decimalFormat.parse(data);
-			} catch (ParseException e) {
-				System.out.println("Debe ser un número decimal");
-			}
-		}
 	}
 	
-	private static Articulo scanArticulo() throws java.text.ParseException {
-		Articulo articulo = new Articulo();
-		articulo.setNombre(scanString(    "   Nombre: "));
-		articulo.setCategoria(scanLong(      "Categoria: "));
-		articulo.setPrecio(scanBigDecimal("   Precio: "));
-		return articulo;
-	}
-	
-	private static long scanLong(String label) {
-		while (true) {
-			System.out.print(label);
-			String data = scanner.nextLine().trim();
-			try {
-				return Long.parseLong(data);
-			} catch (NumberFormatException ex) {
-				System.out.println("Debe ser un número");
-			}
-		}
-	}	
-	private static String scanString(String label) {
-		System.out.print(label);
-		return scanner.nextLine().trim();
-	}
-	
-	private static void showData(Articulo articulo){
-		System.out.printf("%5s %-30s %5s %10s\n", 
+	private static void show(Articulo articulo) {
+		System.out.printf("%5s %-40s %5s %10s\n", 
 				articulo.getId(), 
 				articulo.getNombre(), 
-				articulo.getCategoria(), 
+				format(articulo.getCategoria()), 
 				articulo.getPrecio()
 		);
 	}
 	
-	public static void listarArticulos(EntityManager entityManager){
+	public static String format(Categoria categoria){
+		if (categoria == null)
+			return null;
+		
+		return String.format("%4s %-20s", categoria.getId(), categoria.getNombre());
+	}
+	
+	private static void query() {
+		System.out.println("query:");
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		entityManager.getTransaction().begin();
 		List<Articulo> articulos = entityManager.createQuery("from Articulo", Articulo.class).getResultList();
 		for (Articulo articulo : articulos)
-			showData(articulo);
+			show(articulo);
+		entityManager.getTransaction().commit();
+		entityManager.close();
 	}
 	
-	public static void buscarArticulo(EntityManager entityManager){
-		long id = scanLong("Introduzca una id para buscar");
+	private static Long persist() {
+		System.out.println("persist:");
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		entityManager.getTransaction().begin();
+		Articulo articulo = new Articulo();
+		articulo.setNombre("nuevo " + new Date());
+		entityManager.persist(articulo);
+		entityManager.getTransaction().commit();
+		entityManager.close();
+		show(articulo);
+		return articulo.getId();
+	}
+	
+	private static void find(Long id) {
+		System.out.println("find: " + id);
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		entityManager.getTransaction().begin();
+		
 		Articulo articulo = entityManager.find(Articulo.class, id);
-		showData(articulo);
-
+		
+		entityManager.getTransaction().commit();
+		entityManager.close();
+		show(articulo);
 	}
 	
-	public static void eliminarArticulo(EntityManager entityManager){
-		long id = scanLong("Introduzca una id para eliminar");
+	private static void remove(Long id) {
+		System.out.println("remove: " + id);
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		entityManager.getTransaction().begin();
+		
 		Articulo articulo = entityManager.find(Articulo.class, id);
 		entityManager.remove(articulo);
+		
+		entityManager.getTransaction().commit();
+		entityManager.close();
 	}
 	
-	public static void nuevoArticulo(EntityManager entityManager){
+	private static void update(Long id) {
+		System.out.println("update: " + id);
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		entityManager.getTransaction().begin();
 		
+		Articulo articulo = entityManager.find(Articulo.class, id);
+		articulo.setNombre("modificado " +  new Date());
+		
+		entityManager.getTransaction().commit();
+		entityManager.close();
+		show(articulo);
 	}
+	
+	
+	
 
 }
