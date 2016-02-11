@@ -1,19 +1,24 @@
 package org.institutoserpis.ad;
 
-import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.GenericGenerator;
+
 @Entity
-public class Pedido {
+public class Pedido { 
 
 	private Long id;
 	private Cliente cliente;
 	private Calendar fecha;
+	private List<PedidoLinea> pedidoLinea = new ArrayList<>();
 
 	@Id
 	@GeneratedValue(generator="increment")
@@ -24,6 +29,10 @@ public class Pedido {
 	public void setId(Long id) {
 		this.id = id;
 	}
+	
+	
+	@ManyToOne
+	@JoinColumn(name="cliente")
 	
 	public Cliente getCliente() {
 		return cliente;
@@ -41,6 +50,12 @@ public class Pedido {
 		this.fecha = fecha;
 	}
 	
+	public List<PedidoLinea> getPedidoLineas() {
+		return pedidoLinea;
+	}
+	public void setPedidoLineas(List<PedidoLinea> pedidoLinea) {
+		this.pedidoLinea = pedidoLinea;
+	}
 	public String toString(){
 		return String.format("%s %s", id, cliente);
 	}
